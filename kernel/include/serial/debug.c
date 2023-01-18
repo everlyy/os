@@ -28,8 +28,7 @@ static void print_number(const int32_t num, const uint8_t base, const bool sign)
 
 void debug_print_string(const char* str) {
 	while(*str) {
-		serial_write(*str);
-		str++;
+		serial_write(*str++);
 	}
 }
 
@@ -43,4 +42,49 @@ void debug_print_hex(const uint32_t num) {
 
 void debug_print_dec(const int32_t num) {
 	print_number(num, 10, true);
+}
+
+void debug_printf(const char* fmt, ...) {
+	uint32_t* arg_ptr = (uint32_t*)&fmt;
+	arg_ptr++;
+
+	while(*fmt) {
+		if(*fmt == '%') {
+			fmt++;
+			char c = *fmt;
+			switch(c) {
+			case 'c':
+				serial_write(*(char*)arg_ptr);
+				arg_ptr++;
+				break;
+
+			case 's':
+				debug_print_string(*(char**)arg_ptr);
+				arg_ptr++;
+				break;
+
+			case 'd':
+				print_number(*(int32_t*)arg_ptr, 10, true);
+				arg_ptr++;
+				break;
+
+			case 'x':
+				print_number(*(uint32_t*)arg_ptr, 16, false);
+				arg_ptr++;
+				break;
+
+			case '%':
+				serial_write('%');
+				break;
+
+			default:
+				serial_write('%');
+				serial_write(c);
+				break;
+			}
+		} else {
+			serial_write(*fmt);
+		}
+		fmt++;
+	}
 }
