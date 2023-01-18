@@ -2,29 +2,17 @@
 #include <serial/serial.h>
 #include <serial/debug.h>
 #include <evfs/evfs.h>
+#include <ata/ata.h>
 #include <string.h>
 
 __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	serial_init();
 
-	int32_t status = evfs_verify_filetable();
-	if(status < EVFS_STATUS_SUCCESS)
-		debug_printf("WARNING: Failed to verify filetable: %d\n", status);
-
-	filetable_entry_t* entry;
-	status = evfs_get_entry_by_name(6, "kernel", &entry);
-	if(status < EVFS_STATUS_SUCCESS) {
-		debug_printf("Failed to get entry: %d\n", status);
-		while(1);
-	}
-
-	debug_printf(
-		"Found entry: starting_sector=%d size_in_sectors=%d name_length=%d is_free_space=%x\n", 
-		entry->starting_sector,
-		entry->size_in_sectors,
-		entry->name_length,
-		entry->is_free_space
-	);
+	uint8_t buffer[512];
+	ata_read(1, 1, buffer);
+	buffer[0] = 'e';
+	buffer[1] = 'v';
+	ata_write(1, 1, buffer);
 
 	while(1);
 }
