@@ -13,3 +13,13 @@ int32_t memcmp(const void* s1, const void* s2, uint32_t n) {
 
 	return 0;
 }
+
+void* memcpy(void* dest, const void* src, uint32_t n) {
+	uint8_t* a = (uint8_t*)dest;
+	const uint8_t* b = (const uint8_t*)src;
+
+	for(uint32_t i = 0; i < n; i++)
+		a[i] = b[i];
+
+	return dest;
+}
