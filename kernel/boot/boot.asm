@@ -24,8 +24,8 @@ read_filetable_entries:
 	mov si, secondstage_filename
 	mov dl, byte [secondstage_filename.length]
 	call find_entry_by_name
-	mov cl, [si+0]	
-	mov al, [si+2]
+	mov cl, [di+0]	
+	mov al, [di+2]
 	xor bx, bx
 	mov es, bx
 	mov bx, 0x7E00
@@ -35,8 +35,8 @@ read_filetable_entries:
 	mov si, kernel_filename
 	mov dl, byte [kernel_filename.length]
 	call find_entry_by_name
-	mov cl, [si+0]
-	mov al, [si+2]
+	mov cl, [di+0]
+	mov al, [di+2]
 	mov bx, 0x5000
 	mov es, bx
 	xor bx, bx
@@ -114,13 +114,13 @@ invalid_filetable:
 
 %include "print_string.asm"
 
-;;; Reads the filetable and finds an entry by name
+; Reads the filetable and finds an entry by name
 ; Input:
 ;  SI: pointer to filename
 ;  DL: length of filename
 ;
 ; Returns:
-;  SI: Filetable entry
+;  DI: Filetable entry
 %define FILETABLE_ENTRY_SIZE 32
 %define FILETABLE_ENTRY_HEADER_SIZE 16
 %define FILETABLE_HEADER_SIZE 32
@@ -151,7 +151,6 @@ find_entry_by_name:
 		pop si
 		pop di
 		sub di, FILETABLE_ENTRY_HEADER_SIZE
-		mov si, di
 		ret
 
 kernel_filename: db "kernel"
