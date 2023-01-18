@@ -35,7 +35,7 @@ int32_t serial_init() {
 	return 0;
 }
 
-void serial_write(char c) {
+void serial_write(const char c) {
 	while(is_transmit_empty() == 0);
 	outb(PORT, c);
 }
