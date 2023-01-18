@@ -11,8 +11,15 @@ static int32_t verify_signature() {
 }
 
 static uint16_t calculate_checksum() {
-	// TODO: Implement checksum
-	return 0;
+	// Not really a checksum but it will do for now
+	uint16_t checksum = 0;
+
+	uint8_t* entries_bytes = (uint8_t*)filetable->entries;
+	for(uint32_t i = 0; i < (filetable->number_of_entries * sizeof(filetable_entry_t)); i++) {
+		checksum += entries_bytes[i];
+	}
+
+	return checksum;
 }
 
 static int32_t verify_checksum() {

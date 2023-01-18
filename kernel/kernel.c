@@ -8,10 +8,8 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	serial_init();
 
 	int32_t status = evfs_verify_filetable();
-	if(status < EVFS_STATUS_SUCCESS) {
-		debug_printf("Failed to verify filetable: %d\n", status);
-		while(1);
-	}
+	if(status < EVFS_STATUS_SUCCESS)
+		debug_printf("WARNING: Failed to verify filetable: %d\n", status);
 
 	filetable_entry_t* entry;
 	status = evfs_get_entry_by_name(6, "kernel", &entry);
