@@ -29,4 +29,4 @@ re:
 	$(MAKE) clean all
 
 run:
-	qemu-system-i386 -drive file=$(NAME),format=raw,index=0
+	qemu-system-i386 -drive file=$(NAME),format=raw,index=0 -serial stdio
