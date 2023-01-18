@@ -1,17 +1,21 @@
 #include <types.h>
 #include <serial/serial.h>
-#include <serial/debug.h>
-#include <evfs/evfs.h>
-#include <ata/ata.h>
-#include <string.h>
+#include <vbe/vbe.h>
+#include <stdlib.h>
 
 __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	serial_init();
 
-	filetable_entry_t* entry = NULL;
-	evfs_get_entry_by_name(6, "kernel", &entry);
-	evfs_rename_entry(entry, 6, "everly");
-	evfs_write_filetable();
+	srand(435345);
 
-	while(1);
+	while(1) {
+		for(uint32_t y = 0; y < vbe_mode_info->height; y++) {
+			for(uint32_t x = 0; x < vbe_mode_info->width; x++) {
+				uint8_t r = rand() % 0xFF;
+				uint8_t g = rand() % 0xFF;
+				uint8_t b = rand() % 0xFF;
+				vbe_set_pixel(x, y, (r << 16) | (g << 8) | b);
+			}
+		}
+	}
 }
