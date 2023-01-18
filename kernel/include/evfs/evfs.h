@@ -15,6 +15,7 @@
 #define EVFS_SIGNATURE_LENGTH (sizeof(EVFS_SIGNATURE) - 1)
 
 enum {
+	EVFS_STATUS_NAME_TOO_LONG = -5,
 	EVFS_STATUS_ENTRY_NOT_FOUND = -4,
 	EVFS_STATUS_INVALID_CHECKSUM = -3,
 	EVFS_STATUS_INVALID_SIGNATURE = -2,
@@ -44,5 +45,11 @@ typedef struct filetable_s filetable_t;
 
 filetable_t* filetable = (filetable_t*)FILETABLE_MEMORY_ADDRESS;
 
+int32_t evfs_write_filetable();
 int32_t evfs_verify_filetable();
+int32_t evfs_create_file(const uint8_t name_length, const char* name, filetable_entry_t** entry);
 int32_t evfs_get_entry_by_name(const uint8_t name_length, const char* name, filetable_entry_t** entry);
+int32_t evfs_delete_entry(filetable_entry_t* entry);
+int32_t evfs_rename_entry(filetable_entry_t* entry, const uint8_t name_length, const char* new_name);
+int32_t evfs_read_file(const filetable_entry_t* entry, uint8_t* buffer);
+int32_t evfs_write_file(filetable_entry_t* entry, const uint8_t* buffer, const uint16_t new_size_in_sectors);

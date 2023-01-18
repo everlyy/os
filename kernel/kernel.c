@@ -8,11 +8,10 @@
 __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	serial_init();
 
-	uint8_t buffer[512];
-	ata_read(1, 1, buffer);
-	buffer[0] = 'e';
-	buffer[1] = 'v';
-	ata_write(1, 1, buffer);
+	filetable_entry_t* entry = NULL;
+	evfs_get_entry_by_name(6, "kernel", &entry);
+	evfs_rename_entry(entry, 6, "everly");
+	evfs_write_filetable();
 
 	while(1);
 }
