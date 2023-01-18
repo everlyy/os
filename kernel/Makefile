@@ -1,6 +1,6 @@
 NAME := kernel
 
-SOURCES := kernel.c $(shell find include/ -type f -name "*.c")
+SOURCES := kernel.c $(shell find include/ -type f -name "*.c") $(shell find ../include/ -type f -name "*.c")
 OBJECTS := $(SOURCES:%.c=%.o)
 
 CC := gcc
