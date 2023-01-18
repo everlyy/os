@@ -11,3 +11,13 @@ uint8_t inb(uint16_t port) {
 	ASM("inb %1, %0" : "=a"(value) : "Nd"(port));
 	return value;
 }
+
+void outw(uint16_t port, uint16_t value) {
+	ASM("outw %0, %1" : : "a"(value), "Nd"(port));
+}
+
+uint16_t inw(uint16_t port) {
+	uint16_t value;
+	ASM("inw %1, %0" : "=a"(value) : "Nd"(port));
+	return value;
+}
