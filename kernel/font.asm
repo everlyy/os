@@ -1794,4 +1794,4 @@ char_0x7E:
 
 ; TODO: Add extended ASCII
 
-times 4096 db 0x00
+times 4096-($-$$) db 0x00
