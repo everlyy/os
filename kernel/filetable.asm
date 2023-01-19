@@ -4,7 +4,7 @@
 filetable_headers:
 	db "evfs"	; Signature
 	dw 0x0000	; Checksum
-	dw 0x0004	; Amount of entries
+	dw 0x0005	; Amount of entries
 	dw 0x00FF	; Disk size in sectors
 
 	; Padding
@@ -43,12 +43,23 @@ secondstage_entry:
 
 kernel_entry:
 	dw 0x0008		; Starting sector
-	dw 0x000F		; Size in sectors
+	dw 0x001F		; Size in sectors
 	db 0x06			; Name length
 	db 0x00			; Is free space
 	times 10 db 0	; Unused
 	.name:
 		db "kernel"
 		times 16-($-.name) db 0
+
+font_entry:
+	dw 0x0027		; Starting sector
+	dw 0x0008		; Size in sectors
+	db 0x04			; Name length
+	db 0x00			; Is free space
+	times 10 db 0	; Unused
+	.name:
+		db "font"
+		times 16-($-.name) db 0
+
 
 times 1024-($-$$) db 0

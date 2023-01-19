@@ -11,7 +11,7 @@ all: $(NAME)
 
 $(NAME): $(OBJECTS)
 	ld -T$(NAME).ld $(OBJECTS) $(LDFLAGS) -o $(NAME)
-	dd if=/dev/zero of=$(NAME) bs=1 count=1 seek=8191 status=none
+	dd if=/dev/zero of=$(NAME) bs=1 count=1 seek=15871 status=none
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<

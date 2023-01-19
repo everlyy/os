@@ -4,7 +4,8 @@ OBJ_DIR := obj
 KERNEL_DIR := kernel
 KERNEL := $(KERNEL_DIR)/kernel
 IMPORTANT_ASM_SOURCES := kernel/boot/boot.asm kernel/filetable.asm kernel/boot/secondstage.asm
-BINARIES := $(IMPORTANT_ASM_SOURCES:%.asm=%.o) $(KERNEL)
+ASM_SOURCES := kernel/font.asm 
+BINARIES := $(IMPORTANT_ASM_SOURCES:%.asm=%.o) $(KERNEL) $(ASM_SOURCES:%.asm=%.o)
 
 KERNEL_MAKE := $(MAKE) -C $(KERNEL_DIR)
 
