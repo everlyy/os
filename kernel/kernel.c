@@ -4,8 +4,7 @@
 #include <evfs/evfs.h>
 #include <graphics/font.h>
 #include <graphics/graphics.h>
-#include <vbe/vbe.h>
-#include <stdlib.h>
+#include <terminal/terminal.h>
 #include <string.h>
 #include "image.h"
 
@@ -16,16 +15,9 @@ void panic() {
 	while(1);
 }
 
-__attribute__((section("kernel_entry"))) void kernel_main(void) {
-	serial_init();
-
-	graphics_clear_screen(0x0E0E0E);
-
-	const char* font_name = "font";
-	uint8_t* font_buffer = (uint8_t*)FONT_ADDRESS;
-
+void load_font_from_file(font_t* font, uint8_t* font_buffer, const char* name) {
 	filetable_entry_t* font_entry = NULL;
-	int32_t status = evfs_get_entry_by_name(strlen(font_name), font_name, &font_entry);
+	int32_t status = evfs_get_entry_by_name(strlen(name), name, &font_entry);
 	if(status < EVFS_STATUS_SUCCESS) {
 		debug_printf("Couldn't get font entry: %d\n", status);
 		panic();
@@ -37,17 +29,26 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 		panic();
 	}
 
-	font_t font = {
-		.character_width = 8,
-		.character_height = 16,
-		.characters = font_buffer
-	};
+	font->character_width = 8;
+	font->character_height = 16;
+	font->characters = font_buffer;
 
 	debug_printf("Loaded font. start=%d size=%d buffer=0x%x\n", font_entry->starting_sector, font_entry->size_in_sectors, (uint32_t)font_buffer);
-	graphics_draw_bitmap(image, 0, 0, image_w, image_h);
-	graphics_draw_character(&font, 0, 32, 0xFFFFFF, 'W');
-	graphics_draw_character(&font, 8, 32, 0xFFFFFF, 'T');
-	graphics_draw_character(&font, 16, 32, 0xFFFFFF, 'F');
+}
+
+__attribute__((section("kernel_entry"))) void kernel_main(void) {
+	serial_init();
+
+	font_t font = { 0 };
+	load_font_from_file(&font, (uint8_t*)FONT_ADDRESS, "font");
+	terminal_init(&font, 0x0E0E0E, 0xFFFFFF);
+
+	terminal_puts("abcdefghijklmnopqrstuvwxyz\n");
+	terminal_puts("ABCDEFGHIJKLMNOPQRSTUVWXYZ\n");
+	terminal_puts("0123456789\n");
+	terminal_puts("!@#$%^&*()-=_+[]{};:'\",<.>/?|\\\n");
+
+	terminal_printf("Hello, world!\nformat tests:\n  char: %c\n  string: %s\n  decimal: %d\n  hex: %x\n  percent: %%\n", 'a', "hi", 12345, 0xABCD1234);
 
 	while(1);
 }
