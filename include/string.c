@@ -23,3 +23,10 @@ void* memcpy(void* dest, const void* src, uint32_t n) {
 
 	return dest;
 }
+
+uint32_t strlen(const char* str) {
+	uint32_t len = 0;
+	while(*str++)
+		len++;
+	return len;
+}
