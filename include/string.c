@@ -24,6 +24,13 @@ void* memcpy(void* dest, const void* src, uint32_t n) {
 	return dest;
 }
 
+void* memset(void* s, int c, uint32_t n) {
+	uint8_t* a = (uint8_t*)s;
+	for(uint32_t i = 0; i < n; i++)
+		a[i] = c;
+	return s;
+}
+
 uint32_t strlen(const char* str) {
 	uint32_t len = 0;
 	while(*str++)
