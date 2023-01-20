@@ -94,16 +94,15 @@ uint8_t keyboard_get_scancode() {
 	return inb(PORT_DATA_REGISTER);
 }
 
-uint8_t keyboard_get_ascii() {
+uint8_t keyboard_scancode_to_ascii(uint8_t scancode) {
 	char ascii = 0x00;
-	uint8_t scancode = keyboard_get_scancode();
 
 	enum {
 		LSHIFT_DOWN = 0x2A,
 		LSHIFT_UP = 0xAA,
 		RSHIFT_DOWN = 0x36,
 		RSHIFT_UP = 0xB6,
-		LCTRL_DOWN = 0x14,
+		LCTRL_DOWN = 0x1D,
 		LCTRL_UP = 0x9D,
 	};
 

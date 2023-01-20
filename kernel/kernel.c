@@ -59,10 +59,11 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	}
 
 	while(1) {
-		char c = keyboard_get_ascii();
+		uint8_t scancode = keyboard_get_scancode();
+		char c = keyboard_scancode_to_ascii(scancode);
+		debug_printf("Received scancode: 0x%x\n", scancode);
 		if(!c)
 			continue;
-		debug_printf("Received char: 0x%x\n", c);
 		terminal_putc(c);
 	}
 }
