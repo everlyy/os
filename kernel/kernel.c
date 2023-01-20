@@ -5,6 +5,7 @@
 #include <graphics/font.h>
 #include <graphics/graphics.h>
 #include <terminal/terminal.h>
+#include <keyboard/keyboard.h>
 #include <string.h>
 #include "image.h"
 
@@ -50,5 +51,18 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 
 	terminal_printf("Hello, world!\nformat tests:\n  char: %c\n  string: %s\n  decimal: %d\n  hex: %x\n  percent: %%\n", 'a', "hi", 12345, 0xABCD1234);
 
-	while(1);
+	int32_t status = keyboard_init();
+	if(status != 0) {
+		debug_printf("Failed to initialize keyboard :-(\n");
+	} else {
+		debug_printf("Initialized keyboard :-)\n");
+	}
+
+	while(1) {
+		char c = keyboard_get_ascii();
+		if(!c)
+			continue;
+		debug_printf("Received char: 0x%x\n", c);
+		terminal_putc(c);
+	}
 }
