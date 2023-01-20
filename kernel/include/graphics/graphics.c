@@ -46,3 +46,20 @@ void graphics_draw_bitmap(const uint32_t* bitmap, const uint32_t x, const uint32
 		}
 	}
 }
+
+void graphics_clear_character(const font_t* font, const uint32_t x, const uint32_t y, const uint32_t color) {
+	uint8_t fw = font->character_width;
+	uint8_t fh = font->character_height;
+
+	for(uint8_t fy = 0; fy < fh; fy++) {
+		for(uint8_t fx = 0; fx < fw; fx++) {
+			uint32_t drawx = x + (fw - fx);
+			uint32_t drawy = y + fy;
+
+			if(drawx >= vbe_mode_info->width || drawy >= vbe_mode_info->height)
+				continue;
+
+			vbe_set_pixel(drawx, drawy, color);
+		}
+	}
+}
