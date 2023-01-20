@@ -1,0 +1,5 @@
+#pragma once
+
+#define FILETABLE_ADDRESS 0x2000
+#define FONT_ADDRESS 0x10000
+#define VBE_MODE_INFO_ADDRESS 0x9000

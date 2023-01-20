@@ -1,8 +1,7 @@
 #pragma once
 
 #include <types.h>
-
-#define VBE_MODE_INFO_ADDRESS 0x9000
+#include <addresses.h>
 
 struct vbe_mode_info_s {
 	uint16_t mode_attributes;

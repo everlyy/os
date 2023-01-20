@@ -7,9 +7,8 @@
 #include <terminal/terminal.h>
 #include <keyboard/keyboard.h>
 #include <string.h>
+#include <addresses.h>
 #include "image.h"
-
-#define FONT_ADDRESS 0x10000
 
 void panic() {
 	graphics_clear_screen(0xFF0000);

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <types.h>
+#include <addresses.h>
 
 #define SECTOR_SIZE 512
 
-#define FILETABLE_MEMORY_ADDRESS 0x2000
 #define FILETABLE_SIZE_IN_SECTORS 2
 #define FILETABLE_SIZE (FILETABLE_SIZE_IN_SECTORS * SECTOR_SIZE)
 
@@ -43,7 +43,7 @@ struct filetable_s {
 };
 typedef struct filetable_s filetable_t;
 
-filetable_t* filetable = (filetable_t*)FILETABLE_MEMORY_ADDRESS;
+filetable_t* filetable = (filetable_t*)FILETABLE_ADDRESS;
 
 int32_t evfs_write_filetable();
 int32_t evfs_verify_filetable();
