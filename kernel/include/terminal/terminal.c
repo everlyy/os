@@ -6,6 +6,7 @@
 #include <string.h>
 #include <addresses.h>
 #include <terminal/cursor.h>
+#include <keyboard/keyboard.h>
 
 static char* terminal_screen = (char*)TERMINAL_SCREEN_ADDRESS;
 static uint16_t cursor_x;
@@ -167,4 +168,42 @@ void terminal_printf(const char* fmt, ...) {
 		}
 		fmt++;
 	}
+}
+
+uint32_t terminal_wait_for_command(char* input_buffer, uint32_t input_buffer_length) {
+	uint32_t user_input_length = 0;
+
+	while(1) {
+		uint8_t scancode = keyboard_get_scancode();
+		char c = keyboard_scancode_to_ascii(scancode);
+
+		if(!c)
+			continue;
+
+		if(c == '\n') {
+			terminal_putc(c);
+			break;
+		}
+
+		// Handle backspace where user removes their input
+		if(c == '\b' && user_input_length > 0) {
+			user_input_length--;
+			terminal_putc(c);
+			continue;
+		}
+
+		// This backspace would delete the prompt characters or other things
+		// that weren't typed by the user
+		if(c == '\b')
+			continue;
+
+		terminal_putc(c);
+		input_buffer[user_input_length++] = c;
+
+		if(user_input_length >= input_buffer_length - 1)
+			break;
+	}
+
+	input_buffer[user_input_length] = '\0';
+	return user_input_length;
 }

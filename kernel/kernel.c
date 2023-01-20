@@ -38,6 +38,7 @@ void load_font_from_file(font_t* font, uint8_t* font_buffer, const char* name) {
 
 __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	serial_init();
+	keyboard_init();
 
 	font_t font = { 0 };
 	load_font_from_file(&font, (uint8_t*)FONT_ADDRESS, "font");
@@ -50,19 +51,11 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 
 	terminal_printf("Hello, world!\nformat tests:\n  char: %c\n  string: %s\n  decimal: %d\n  hex: %x\n  percent: %%\n", 'a', "hi", 12345, 0xABCD1234);
 
-	int32_t status = keyboard_init();
-	if(status != 0) {
-		debug_printf("Failed to initialize keyboard :-(\n");
-	} else {
-		debug_printf("Initialized keyboard :-)\n");
-	}
+	char buffer[128];
 
 	while(1) {
-		uint8_t scancode = keyboard_get_scancode();
-		char c = keyboard_scancode_to_ascii(scancode);
-		debug_printf("Received scancode: 0x%x\n", scancode);
-		if(!c)
-			continue;
-		terminal_putc(c);
+		terminal_printf("$ ");
+		uint32_t length = terminal_wait_for_command(buffer, 128);
+		terminal_printf("entered %d characters: %s\n", length, buffer);
 	}
 }
