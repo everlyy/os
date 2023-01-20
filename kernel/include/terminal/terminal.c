@@ -32,6 +32,12 @@ void terminal_putc(const char c) {
 		cursor_y++;
 	} else if(c == '\r') {
 		cursor_x = 0;
+	} else if(c == '\b') {
+		// FIXME: This currently doesn't support backspacing up, fix that
+		//  Probably a better thing is to keep a buffer with all the characters and draw that, instead of just drawing the characters
+		if(cursor_x != 0)
+			cursor_x--;
+		graphics_clear_character(term_font, cursor_x * term_font->character_width, cursor_y * term_font->character_height, background_color);
 	} else {
 		graphics_draw_character(term_font, cursor_x * term_font->character_width, cursor_y * term_font->character_height, foreground_color, c);
 		cursor_x++;
