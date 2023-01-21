@@ -9,10 +9,15 @@ BINARIES := $(IMPORTANT_ASM_SOURCES:%.asm=%.o) $(KERNEL) $(ASM_SOURCES:%.asm=%.o
 
 KERNEL_MAKE := $(MAKE) -C $(KERNEL_DIR)
 
+DISKIMG_DIR := tools/create-disk-image
+DISKIMG_MAKE := $(MAKE) -C $(DISKIMG_DIR)
+DISKIMG := $(DISKIMG_DIR)/diskimg
+
 all: $(NAME)
 
 $(NAME): $(BINARIES)
-	cat $(BINARIES) > $(NAME)
+	make -C $(DISKIMG_DIR) all
+	$(DISKIMG) $(NAME) $(BINARIES)
 
 %.o: %.asm
 	mkdir -p $(@D)
@@ -24,9 +29,11 @@ $(KERNEL):
 clean:
 	rm -f $(NAME) $(BINARIES)
 	$(KERNEL_MAKE) clean
+	$(DISKIMG_MAKE) clean
 
 re: 
 	$(KERNEL_MAKE) re
+	$(DISKIMG_MAKE) re
 	$(MAKE) clean all
 
 run:

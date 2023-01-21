@@ -1,3 +1,4 @@
 *.o
 kernel/kernel
 os.img
+tools/create-disk-image/diskimg
