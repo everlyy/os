@@ -48,7 +48,7 @@ int add_entry_to_filetable(filetable_t* filetable, uint8_t* disk_image, size_t* 
 	}
 
 	filetable_entry_t* entry = &filetable->entries[filetable->number_of_entries++];
-	entry->starting_sector = *sector_count; // Sectors start at 1
+	entry->starting_sector = *sector_count;
 	entry->size_in_sectors = filesize / SECTOR_SIZE;
 	entry->name_length = filename_length;
 	entry->is_free_space = 0;
