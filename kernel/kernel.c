@@ -40,6 +40,10 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	serial_init();
 	keyboard_init();
 
+	int32_t status = evfs_verify_filetable();
+	if(status < EVFS_STATUS_SUCCESS)
+		debug_printf("Couldn't verify filetable\n");
+
 	font_t font = { 0 };
 	load_font_from_file(&font, (uint8_t*)FONT_ADDRESS, "font");
 	terminal_init(&font, 0x0E0E0E, 0xFFFFFF);
