@@ -32,8 +32,8 @@ clean:
 	$(DISKIMG_MAKE) clean
 
 re: 
-	$(KERNEL_MAKE) re
-	$(DISKIMG_MAKE) re
+	$(KERNEL_MAKE) clean
+	$(DISKIMG_MAKE) clean
 	$(MAKE) clean all
 
 run:
