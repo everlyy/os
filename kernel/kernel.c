@@ -19,13 +19,13 @@ void load_font_from_file(font_t* font, uint8_t* font_buffer, const char* name) {
 	filetable_entry_t* font_entry = NULL;
 	int32_t status = evfs_get_entry_by_name(strlen(name), name, &font_entry);
 	if(status < EVFS_STATUS_SUCCESS) {
-		debug_printf("Couldn't get font entry: %d\n", status);
+		dbgprintf("Couldn't get font entry: %d\n", status);
 		panic();
 	}
 
 	status = evfs_read_file(font_entry, font_buffer);
 	if(status < EVFS_STATUS_SUCCESS) {
-		debug_printf("Couldn't read font entry: %d\n", status);
+		dbgprintf("Couldn't read font entry: %d\n", status);
 		panic();
 	}
 
@@ -33,7 +33,7 @@ void load_font_from_file(font_t* font, uint8_t* font_buffer, const char* name) {
 	font->character_height = 16;
 	font->characters = font_buffer;
 
-	debug_printf("Loaded font. start=%d size=%d buffer=0x%x\n", font_entry->starting_sector, font_entry->size_in_sectors, (uint32_t)font_buffer);
+	dbgprintf("Loaded font. start=%d size=%d buffer=0x%x\n", font_entry->starting_sector, font_entry->size_in_sectors, (uint32_t)font_buffer);
 }
 
 __attribute__((section("kernel_entry"))) void kernel_main(void) {
@@ -42,7 +42,7 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 
 	int32_t status = evfs_verify_filetable();
 	if(status < EVFS_STATUS_SUCCESS)
-		debug_printf("Couldn't verify filetable\n");
+		dbgprintf("Couldn't verify filetable\n");
 
 	font_t font = { 0 };
 	load_font_from_file(&font, (uint8_t*)FONT_ADDRESS, "font");
