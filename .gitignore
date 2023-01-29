@@ -2,3 +2,5 @@
 kernel/kernel
 os.img
 tools/create-disk-image/diskimg
+programs/programs
+programs/testpgm/testpgm
