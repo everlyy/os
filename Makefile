@@ -32,6 +32,7 @@ clean:
 	$(KERNEL_MAKE) clean
 	$(DISKIMG_MAKE) clean
 	./programs/build-all.sh clean
+	rm -f programs/programs
 
 re:
 	./programs/build-all.sh clean
