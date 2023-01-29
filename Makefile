@@ -13,12 +13,16 @@ DISKIMG_DIR := tools/create-disk-image
 DISKIMG_MAKE := $(MAKE) -C $(DISKIMG_DIR)
 DISKIMG := $(DISKIMG_DIR)/diskimg
 
+PROGRAMS_DIR := programs
+PROGRAMS_SCRIPT := $(PROGRAMS_DIR)/build.sh
+PROGRAMS_LIST_FILE := $(PROGRAMS_DIR)/programs
+
 all: $(NAME)
 
 $(NAME): $(BINARIES)
-	./programs/build-all.sh all
-	make -C $(DISKIMG_DIR) all
-	$(DISKIMG) $(NAME) $(BINARIES) $(shell cat programs/programs)
+	$(PROGRAMS_SCRIPT) all
+	$(DISKIMG_MAKE) all
+	$(DISKIMG) $(NAME) $(BINARIES) $$(cat ${PROGRAMS_LIST_FILE})
 
 %.o: %.asm
 	mkdir -p $(@D)
@@ -31,11 +35,11 @@ clean:
 	rm -f $(NAME) $(BINARIES)
 	$(KERNEL_MAKE) clean
 	$(DISKIMG_MAKE) clean
-	./programs/build-all.sh clean
-	rm -f programs/programs
+	$(PROGRAMS_SCRIPT) clean
+	rm -f $(PROGRAMS_LIST_FILE)
 
 re:
-	./programs/build-all.sh clean
+	$(PROGRAMS_SCRIPT) re
 	$(KERNEL_MAKE) clean
 	$(DISKIMG_MAKE) clean
 	$(MAKE) clean all

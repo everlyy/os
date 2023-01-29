@@ -8,6 +8,6 @@ echo -n '' > programs
 
 for dir in */
 do
-	echo -n "$(dirname "$0")/$dir$(basename "$dir") " >> programs
 	make -C $dir $1
+	echo -n "$(dirname "$0")/$dir$(basename "$dir") " >> programs
 done
