@@ -12,7 +12,7 @@ $(NAME): $(OBJECTS)
 	$(CC) -o $(NAME) $(OBJECTS)
 
 %.o: %.c
-	gcc -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
 	rm -f $(NAME) $(OBJECTS)
