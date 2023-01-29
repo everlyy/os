@@ -11,7 +11,6 @@ all: $(NAME)
 
 $(NAME): $(OBJECTS)
 	ld -T../program.ld $(OBJECTS) $(LDFLAGS) -o $(NAME)
-	dd if=/dev/zero of=$(NAME) bs=1 count=1 seek=1023 status=none
 
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)

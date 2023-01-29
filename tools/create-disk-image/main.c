@@ -47,15 +47,17 @@ int add_entry_to_filetable(filetable_t* filetable, uint8_t* disk_image, size_t* 
 		return 1;
 	}
 
+	size_t sector_aligned_filesize = (filesize + SECTOR_SIZE - 1) & ~(SECTOR_SIZE - 1);
+
 	filetable_entry_t* entry = &filetable->entries[filetable->number_of_entries++];
 	entry->starting_sector = *sector_count;
-	entry->size_in_sectors = filesize / SECTOR_SIZE;
+	entry->size_in_sectors = sector_aligned_filesize / SECTOR_SIZE;
 	entry->name_length = filename_length;
 	entry->is_free_space = 0;
 	memcpy(entry->name, filename, filename_length);
 
-	size_t read = fread(&disk_image[(entry->starting_sector - 1) * SECTOR_SIZE], SECTOR_SIZE, entry->size_in_sectors, file);
-	if(read != entry->size_in_sectors) {
+	size_t read = fread(&disk_image[(entry->starting_sector - 1) * SECTOR_SIZE], 1, filesize, file);
+	if(read != filesize) {
 		fprintf(stderr, "Couldn't read %s\n", filename);
 		return 1;
 	}
@@ -104,6 +106,7 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Couldn't open %s: %s\n", argv[2], strerror(errno));
 		return 1;
 	}
+
 	add_entry_to_filetable(&filetable, disk_image, &sector_count, "boot", 4, bootfile, 512);
 	printf("diskimg: added boot\n");
 
@@ -121,11 +124,6 @@ int main(int argc, char** argv) {
 		fseek(file, 0, SEEK_END);
 		size_t filesize = ftell(file);
 		fseek(file, 0, SEEK_SET);
-		
-		if(filesize % SECTOR_SIZE != 0) {
-			fprintf(stderr, "%s isn't aligned to sector size.\n", filename);
-			return 1;
-		}
 
 		char* entry_filename = basename(filename);
 		for(size_t j = 0; j < strlen(entry_filename); j++) {
