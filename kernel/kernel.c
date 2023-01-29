@@ -74,6 +74,21 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	while(1) {
 		terminal_printf("$ ");
 		uint32_t length = terminal_wait_for_command(buffer, 128);
-		terminal_printf("entered %d characters: %s\n", length, buffer);
+		terminal_printf("Loading %s as program from file.\n", buffer);
+
+		filetable_entry_t* program_entry = NULL;
+		int32_t status = evfs_get_entry_by_name(length, buffer, &program_entry);
+		if(status < EVFS_STATUS_SUCCESS) {
+			terminal_printf("Couldn't find program by name: %d\n", status);
+			continue;
+		}
+
+		status = evfs_read_file(program_entry, (uint8_t*)PROGRAM_ADDRESS);
+		if(status < EVFS_STATUS_SUCCESS) {
+			terminal_printf("Couldn't read program entry: %d\n", status);
+			continue;
+		}
+		// Call the program
+		((void(*)(void))PROGRAM_ADDRESS)();
 	}
 }

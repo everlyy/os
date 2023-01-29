@@ -16,8 +16,9 @@ DISKIMG := $(DISKIMG_DIR)/diskimg
 all: $(NAME)
 
 $(NAME): $(BINARIES)
+	./programs/build-all.sh all
 	make -C $(DISKIMG_DIR) all
-	$(DISKIMG) $(NAME) $(BINARIES)
+	$(DISKIMG) $(NAME) $(BINARIES) $(shell cat programs/programs)
 
 %.o: %.asm
 	mkdir -p $(@D)
@@ -30,8 +31,10 @@ clean:
 	rm -f $(NAME) $(BINARIES)
 	$(KERNEL_MAKE) clean
 	$(DISKIMG_MAKE) clean
+	./programs/build-all.sh clean
 
-re: 
+re:
+	./programs/build-all.sh clean
 	$(KERNEL_MAKE) clean
 	$(DISKIMG_MAKE) clean
 	$(MAKE) clean all
