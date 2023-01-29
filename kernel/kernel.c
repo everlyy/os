@@ -44,6 +44,20 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	if(status < EVFS_STATUS_SUCCESS)
 		dbgprintf("Couldn't verify filetable\n");
 
+	dbgprintf("FILETABLE DUMP:\n");
+	for(uint16_t i = 0; i < filetable->number_of_entries; i++) {
+		filetable_entry_t* entry = &filetable->entries[i];
+		if(entry->is_free_space)
+			continue;
+
+		char name[MAX_NAME_LENGTH + 1];
+		memset(name, ' ', MAX_NAME_LENGTH);
+		memcpy(name, entry->name, entry->name_length);
+		name[MAX_NAME_LENGTH] = '\0';
+
+		dbgprintf("  %s start=%d size=%d\n", name, entry->starting_sector, entry->size_in_sectors);
+	}
+
 	font_t font = { 0 };
 	load_font_from_file(&font, (uint8_t*)FONT_ADDRESS, "font");
 	terminal_init(&font, 0x0E0E0E, 0xFFFFFF);
