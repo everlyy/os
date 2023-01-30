@@ -2,7 +2,6 @@
 #include <vbe/vbe.h>
 #include <graphics/graphics.h>
 #include <graphics/font.h>
-#include <stdbool.h>
 #include <string.h>
 #include <addresses.h>
 #include <terminal/cursor.h>

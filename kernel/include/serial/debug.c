@@ -1,6 +1,5 @@
 #include <serial/debug.h>
 #include <serial/serial.h>
-#include <stdbool.h>
 #include <printf.h>
 
 void debug_printf(const char* fmt, ...) {

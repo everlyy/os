@@ -1,6 +1,5 @@
 #include <printf.h>
 #include <types.h>
-#include <stdbool.h>
 
 static const char* characters = "0123456789abcdef";
 
