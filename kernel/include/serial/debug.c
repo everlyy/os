@@ -1,10 +1,13 @@
 #include <serial/debug.h>
 #include <serial/serial.h>
 #include <printf.h>
+#include <stdarg.h>
 
 void debug_printf(const char* fmt, ...) {
-	uint32_t* arg_ptr = (uint32_t*)&fmt;
-	arg_ptr++;
+	va_list args;
+	va_start(fmt, args);
 
-	printf(&serial_write, fmt, arg_ptr);
+	printf(&serial_write, fmt, args);
+
+	va_end(args);
 }

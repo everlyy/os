@@ -32,7 +32,7 @@ static void puts(putc_func putc, const char* str) {
 	}
 }
 
-void printf(const putc_func putc, const char* fmt, uint32_t* arg_ptr) {
+void printf(const putc_func putc, const char* fmt, va_list args) {
 	// TODO: Use a write() function and use a buffer to print instead of just printing everything character by character
 
 	while(*fmt) {
@@ -41,23 +41,19 @@ void printf(const putc_func putc, const char* fmt, uint32_t* arg_ptr) {
 			char c = *fmt;
 			switch(c) {
 			case 'c':
-				putc(*(char*)arg_ptr);
-				arg_ptr++;
+				putc(va_arg(args, char));;
 				break;
 
 			case 's':
-				puts(putc, *(char**)arg_ptr);
-				arg_ptr++;
+				puts(putc, va_arg(args, char*));
 				break;
 
 			case 'd':
-				print_number(putc, *(int32_t*)arg_ptr, 10, true);
-				arg_ptr++;
+				print_number(putc, va_arg(args, int32_t), 10, true);
 				break;
 
 			case 'x':
-				print_number(putc, *(uint32_t*)arg_ptr, 16, false);
-				arg_ptr++;
+				print_number(putc, va_arg(args, uint32_t), 16, false);
 				break;
 
 			case '%':

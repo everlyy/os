@@ -7,6 +7,7 @@
 #include <terminal/cursor.h>
 #include <keyboard/keyboard.h>
 #include <printf.h>
+#include <stdarg.h>
 
 static char* terminal_screen = (char*)TERMINAL_SCREEN_ADDRESS;
 static uint16_t cursor_x;
@@ -102,10 +103,12 @@ void terminal_puts(const char* str) {
 }
 
 void terminal_printf(const char* fmt, ...) {
-	uint32_t* arg_ptr = (uint32_t*)&fmt;
-	arg_ptr++;
+	va_list args;
+	va_start(fmt, args);
 
-	printf(&terminal_putc, fmt, arg_ptr);
+	printf(&terminal_putc, fmt, args);
+
+	va_end(args);
 }
 
 uint32_t terminal_wait_for_command(char* input_buffer, uint32_t input_buffer_length) {
