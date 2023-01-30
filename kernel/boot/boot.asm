@@ -116,9 +116,11 @@ calculate_filetable_checksum:
 	mov si, FILETABLE_ADDRESS
 
 	mov ax, [si + 6]	; Save number of entries in filetable to AX
-	xor di, di			; Clear DI
-	xor bx, bx			; Clear BX
-	xor cx, cx			; Clear CX
+
+	; Clear some registers
+	xor di, di
+	xor bx, bx
+	xor cx, cx
 
 	mov dx, FILETABLE_ENTRY_SIZE
 	mul dx							; AX = entries count * sizeof entry
@@ -126,11 +128,14 @@ calculate_filetable_checksum:
 	add si, FILETABLE_HEADER_SIZE	; SI now points to start of entries list
 
 	.loop:
-		cmp bx, ax
+		cmp bx, ax	; Check if we reached end of entries
 		jge .return
 
+		; This just adds whatever is at (si + bx) to di,
+		; it's the 'checksum' for my filetable
 		mov cl, byte [si + bx]
 		add di, cx
+
 		inc bx
 		jmp .loop
 
@@ -163,6 +168,7 @@ invalid_filetable:
 ; Returns:
 ;  DI: Filetable entry
 find_entry_by_name:
+	; Make DI point at name of first entry
 	mov di, FILETABLE_ADDRESS
 	add di, FILETABLE_HEADER_SIZE
 	add di, FILETABLE_ENTRY_HEADER_SIZE
@@ -172,6 +178,9 @@ find_entry_by_name:
 		cmp byte [di - 11], 0x00
 		jne .continue
 
+		; This is really just a memcmp in assembly
+		; CL is the amount of bytes to compare
+		; the 2 registers on the stack are the 2 memory regions to compare
 		mov cl, dl
 		push di
 		push si
@@ -181,13 +190,13 @@ find_entry_by_name:
 		pop di
 		
 		.continue:
-			add di, FILETABLE_ENTRY_SIZE
+			add di, FILETABLE_ENTRY_SIZE	; Skip to next entry
 			jmp .loop
 
 	.return:
 		pop si
 		pop di
-		sub di, FILETABLE_ENTRY_HEADER_SIZE
+		sub di, FILETABLE_ENTRY_HEADER_SIZE	; Point DI at start of entry
 		ret
 
 kernel_filename: db "kernel"
