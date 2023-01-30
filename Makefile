@@ -25,7 +25,6 @@ $(NAME): $(BINARIES)
 	$(DISKIMG) $(NAME) $(BINARIES) $$(cat ${PROGRAMS_LIST_FILE})
 
 %.o: %.asm
-	mkdir -p $(@D)
 	nasm -o $@ $< -Ikernel/boot
 
 $(KERNEL):
