@@ -7,6 +7,7 @@
 #include <addresses.h>
 #include <terminal/cursor.h>
 #include <keyboard/keyboard.h>
+#include <printf.h>
 
 static char* terminal_screen = (char*)TERMINAL_SCREEN_ADDRESS;
 static uint16_t cursor_x;
@@ -16,7 +17,6 @@ static uint16_t term_height;
 static uint32_t background_color;
 static uint32_t foreground_color;
 static font_t* term_font;
-static const char* characters = "0123456789abcdef";
 
 static void draw_character(const char c, const uint32_t x, const uint32_t y) {
 	uint8_t* character = &term_font->characters[c * term_font->character_height];
@@ -102,72 +102,11 @@ void terminal_puts(const char* str) {
 	}
 }
 
-static void print_number(const int32_t num, const uint8_t base, const bool sign) {
-	char buffer[16] = { 0 };
-	bool negative = false;
-	int32_t i = 0;
-	uint32_t n = num;
-
-	if(sign && num < 0) {
-		negative = true;
-		n = -num;
-	}
-
-	do {
-		buffer[i++] = characters[n % base];
-	} while((n /= base) > 0);
-
-	if(negative)
-		buffer[i++] = '-';
-
-	while(--i >= 0)
-		terminal_putc(buffer[i]);
-}
-
 void terminal_printf(const char* fmt, ...) {
-	// FIXME: Don't duplicate code for terminal_printf and debug_printf
 	uint32_t* arg_ptr = (uint32_t*)&fmt;
 	arg_ptr++;
 
-	while(*fmt) {
-		if(*fmt == '%') {
-			fmt++;
-			char c = *fmt;
-			switch(c) {
-			case 'c':
-				terminal_putc(*(char*)arg_ptr);
-				arg_ptr++;
-				break;
-
-			case 's':
-				terminal_puts(*(char**)arg_ptr);
-				arg_ptr++;
-				break;
-
-			case 'd':
-				print_number(*(int32_t*)arg_ptr, 10, true);
-				arg_ptr++;
-				break;
-
-			case 'x':
-				print_number(*(uint32_t*)arg_ptr, 16, false);
-				arg_ptr++;
-				break;
-
-			case '%':
-				terminal_putc('%');
-				break;
-
-			default:
-				terminal_putc('%');
-				terminal_putc(c);
-				break;
-			}
-		} else {
-			terminal_putc(*fmt);
-		}
-		fmt++;
-	}
+	printf(&terminal_putc, fmt, arg_ptr);
 }
 
 uint32_t terminal_wait_for_command(char* input_buffer, uint32_t input_buffer_length) {
