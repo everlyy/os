@@ -67,7 +67,7 @@ __attribute__((section("kernel_entry"))) void kernel_main(void) {
 	terminal_puts("0123456789\n");
 	terminal_puts("!@#$%^&*()-=_+[]{};:'\",<.>/?|\\\n");
 
-	terminal_printf("Hello, world!\nformat tests:\n  char: %c\n  string: %s\n  decimal: %d\n  hex: %x\n  percent: %%\n", 'a', "hi", 12345, 0xABCD1234);
+	terminal_printf("Hello, world!\nformat tests:\n  char: %c\n  string: %s\n  decimal: %d\n  hex: %x\n  binary: %b\n  percent: %%\n", 'a', "hi", 12345, 0xABCD1234, 0b111100001010010100111100);
 
 	char buffer[128];
 

@@ -4,7 +4,7 @@
 static const char* characters = "0123456789abcdef";
 
 static void print_number(const putc_func putc, const int32_t num, const uint8_t base, const bool sign) {
-	char buffer[16] = { 0 };
+	char buffer[32] = { 0 };
 	bool negative = false;
 	int32_t i = 0;
 	uint32_t n = num;
@@ -54,6 +54,10 @@ void printf(const putc_func putc, const char* fmt, va_list args) {
 
 			case 'x':
 				print_number(putc, va_arg(args, uint32_t), 16, false);
+				break;
+
+			case 'b':
+				print_number(putc, va_arg(args, uint32_t), 2, false);
 				break;
 
 			case '%':
