@@ -33,6 +33,8 @@ static void puts(putc_func putc, const char* str) {
 }
 
 void printf(const putc_func putc, const char* fmt, uint32_t* arg_ptr) {
+	// TODO: Use a write() function and use a buffer to print instead of just printing everything character by character
+
 	while(*fmt) {
 		if(*fmt == '%') {
 			fmt++;
