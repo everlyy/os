@@ -5,6 +5,10 @@ bits 16
 %define FILETABLE_SIZE 2
 %define FILETABLE_ADDRESS 0x2000
 
+%define FILETABLE_ENTRY_SIZE 32
+%define FILETABLE_ENTRY_HEADER_SIZE 16
+%define FILETABLE_HEADER_SIZE 32
+
 boot_entry:
 	mov byte [drive_number], dl
 
@@ -77,7 +81,6 @@ verify_filetable:
 	mov si, FILETABLE_ADDRESS
 	repe cmpsb
 	jne .invalid
-	jmp .return
 
 	call verify_filetable_checksum
 	jc .invalid
@@ -93,8 +96,46 @@ verify_filetable:
 
 verify_filetable_checksum:
 	clc
-	; FIXME: Actually verify checksum
-	ret
+
+	call calculate_filetable_checksum		; DI = Calculated checksum
+	mov dx, word [FILETABLE_ADDRESS + 4]	; DX = Checksum in filetable
+	cmp dx, di
+	jne .invalid_checksum
+	jmp .return
+
+	.invalid_checksum:
+		stc
+
+	.return:
+		ret
+
+; Calculate checksum of filetable in memory
+; Returns:
+;  DI: Checksum
+calculate_filetable_checksum:
+	mov si, FILETABLE_ADDRESS
+
+	mov ax, [si + 6]	; Save number of entries in filetable to AX
+	xor di, di			; Clear DI
+	xor bx, bx			; Clear BX
+	xor cx, cx			; Clear CX
+
+	mov dx, FILETABLE_ENTRY_SIZE
+	mul dx							; AX = entries count * sizeof entry
+
+	add si, FILETABLE_HEADER_SIZE	; SI now points to start of entries list
+
+	.loop:
+		cmp bx, ax
+		jge .return
+
+		mov cl, byte [si + bx]
+		add di, cx
+		inc bx
+		jmp .loop
+
+	.return:
+		ret
 
 invalid_filetable:
 	mov si, .message
@@ -121,10 +162,6 @@ invalid_filetable:
 ;
 ; Returns:
 ;  DI: Filetable entry
-%define FILETABLE_ENTRY_SIZE 32
-%define FILETABLE_ENTRY_HEADER_SIZE 16
-%define FILETABLE_HEADER_SIZE 32
-
 find_entry_by_name:
 	mov di, FILETABLE_ADDRESS
 	add di, FILETABLE_HEADER_SIZE
