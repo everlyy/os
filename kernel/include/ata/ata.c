@@ -1,7 +1,7 @@
 // https://wiki.osdev.org/ATA_PIO_Mode
 
 #include <ata/ata.h>
-#include <ports/ports.h>
+#include <io/ports.h>
 
 #define IO_PORT_BASE 0x1F0
 #define PORT_DATA_REGISTER			(IO_PORT_BASE + 0)

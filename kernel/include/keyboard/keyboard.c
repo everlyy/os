@@ -1,5 +1,5 @@
 #include <keyboard/keyboard.h>
-#include <ports/ports.h>
+#include <io/ports.h>
 
 #define PORT_DATA_REGISTER 0x60
 #define PORT_STATUS_REGISTER 0x64

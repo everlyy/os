@@ -1,7 +1,7 @@
 // https://wiki.osdev.org/Serial_Ports
 
 #include <serial/serial.h>
-#include <ports/ports.h>
+#include <io/ports.h>
 
 #define PORT 0x3F8
 #define CHECK_BYTE 0xAE
